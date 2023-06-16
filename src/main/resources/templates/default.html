@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ru"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Киносайт</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="icon" href="/favicon.svg">
+    <script type="text/javascript" src="/webjars/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="/webjars/bootstrap/5.1.3/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/webjars/font-awesome/6.1.0/css/all.min.css"/>
+    <link rel="stylesheet" href="/css/style.css"/>
+</head>
+<body class="d-flex flex-column h-100 text-white">
+<header class="fs-4 fw-bold p-1">
+    <nav class="navbar navbar-expand-lg navbar-dark text-white">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                <i class="fa-solid fa-font-awesome"></i>
+            </a>
+            <button class="navbar-toggler" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse menu" id="navbarNav">
+                <ul class="navbar-nav" sec:authorize="!isAuthenticated()">
+                    <a class="nav-link" href="/login">Вход</a>
+                </ul>
+                <ul class="navbar-nav" sec:authorize="isAuthenticated()">
+                    <a class="nav-link" href="/">Главная</a>
+                    <a sec:authorize="hasRole('ROLE_ADMIN')" class="nav-link" href="/user">Пользователи</a>
+                    <a class="nav-link" href="/h2-console/" target="_blank" sec:authorize="hasRole('ROLE_ADMIN')">Консоль H2</a>
+                    <a class="nav-link" href="/logout">Выход</a>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="container rounded my-5 p-4 content">
+    <div class="content_header rounded-top p-2 mb-2">
+        <h1 class="fs-1 fw-bold text-white ms-5">
+            <div layout:fragment="content_header">
+            </div>
+        </h1>
+    </div>
+    <div layout:fragment="content">
+    </div>
+</div>
+</body>
+<th:block layout:fragment="scripts">
+</th:block>
+</html>

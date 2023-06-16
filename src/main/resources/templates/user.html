@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{default}">
+<head>
+</head>
+<body>
+<div layout:fragment="content_header">Пользователи</div>
+<div layout:fragment="content">
+    <table class="table text-white" id="tbl-items">
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Логин</th>
+            <th scope="col">Пароль</th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user, iterator: ${users}">
+            <td th:text="${user.id}"/>
+            <td th:text="${user.login}"/>
+            <td th:text="${user.password}"/>
+            <td th:text="${user.role}"/>
+            <td>
+                <div>
+                    <a type="button" class="m-1 btn btn-primary" th:href="@{/user/edit/{id}(id=${user.id})}">
+                        <i class="fa fa-pencil"></i>
+                    </a>
+                    <a type="button" class="m-1 btn btn-danger"
+                       th:attr="onclick=|confirm('Удалить запись?') && document.getElementById('remove-${user.id}').click()|">
+                        <i class="fa fa-trash"></i>
+                    </a>
+                </div>
+                <form th:action="@{/user/delete/{id}(id=${user.id})}" method="post">
+                    <button th:id="'remove-' + ${user.id}" type="submit" style="display: none">
+                        Удалить
+                    </button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div th:if="${totalPages > 0}" class="pagination">
+        <span style="float: left; padding: 5px 5px;">Страницы:</span>
+        <a th:each="page : ${pages}"
+           th:href="@{/user(page=${page}, size=${users.size})}"
+           th:text="${page}"
+           th:class="${page == users.number + 1} ? active">
+        </a>
+    </div>
+</div>
+</body>
+</html>
