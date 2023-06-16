@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -19,6 +21,17 @@ public class Repository {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_fk")
     protected User user;
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "repository", cascade = {CascadeType.MERGE,CascadeType.REMOVE})
+    private List<Branch> branches;
+
+    public Repository() {
+    }
+
+    public Repository(String name, String description) {
+        this.name = name;
+        this.description = description;
+        branches = new ArrayList<>();
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -31,6 +44,16 @@ public class Repository {
     @Override
     public int hashCode() {
         return Objects.hash(id, name, description, user);
+    }
+
+    public List<Branch> getBranches() {
+        return branches;
+    }
+
+    public void setBranch(Branch branch) {
+        if (branch.getRepository().equals(this)) {
+            this.branches.add(branch);
+        }
     }
 
     public Long getId() {

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{default}">
+<head>
+</head>
+<body>
+<div layout:fragment="content_header" th:text="'Ветки от ' + ${repository.name}"></div>
+<div layout:fragment="content">
+    <div class="d-flex justify-content-end">
+        <a class="btn btn-success button-fixed"
+           th:href="'/repository/'+${repository.id}+'/edit'">
+            <i class="fa-solid fa-plus"></i>
+        </a>
+    </div>
+    <table class="table text-white" id="tbl-items">
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Name</th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="item, iterator: ${branches}">
+            <td th:text="${item.id}"/>
+            <td><a th:text="${item.name}" th:href="'/repository/'+${repository.id}+'/edit/'+${item.id}"/></td>
+            <td>
+                <div>
+                    <a type="button" class="m-1 btn btn-primary" th:href="'/repository/'+${repository.id}+'/edit/'+${item.id}">
+                        <i class="fa fa-pencil"></i>
+                    </a>
+                    <a type="button" class="m-1 btn btn-danger"
+                       th:attr="onclick=|confirm('Удалить запись?') && document.getElementById('remove-${item.id}').click()|">
+                        <i class="fa fa-trash"></i>
+                    </a>
+                </div>
+                <form th:action="'/repository/'+${repository.id}+'/delete/'+${item.id}" method="post">
+                    <button th:id="'remove-' + ${item.id}" type="submit" style="display: none">
+                        Удалить
+                    </button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

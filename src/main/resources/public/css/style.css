@@ -60,7 +60,7 @@ form select {
 }
 
 table tbody tr td {
-    border: 0px !important;
+    brepository: 0px !important;
 }
 
 footer {
@@ -105,5 +105,5 @@ a:hover {
 .pagination a.active {
     background-color: gray;
     color: white;
-    border-radius: 2px;
+    brepository-radius: 2px;
 }

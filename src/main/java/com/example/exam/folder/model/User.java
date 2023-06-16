@@ -28,12 +28,6 @@ public class User {
     public User() {
     }
 
-    public User(String login, String password) {
-        this.login = login;
-        this.password = password;
-        this.role = UserRole.USER;
-    }
-
     public User(String login, String password, UserRole role) {
         this.login = login;
         this.password = password;

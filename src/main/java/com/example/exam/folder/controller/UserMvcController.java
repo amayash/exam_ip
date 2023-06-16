@@ -59,7 +59,7 @@ public class UserMvcController {
 
     @PostMapping("/{id}")
     @Secured({UserRole.AsString.ADMIN})
-    public String updateCustomer(@PathVariable Long id,
+    public String updateUser(@PathVariable Long id,
                                  @ModelAttribute @Valid UserDto userDto,
                                  BindingResult bindingResult,
                                  Model model) {
