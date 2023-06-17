@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{default}">
+<head>
+</head>
+<body>
+<div layout:fragment="content_header" th:text="'Товары корзины'"></div>
+<div layout:fragment="content">
+    <form action="#" th:action="@{/cart/}" method="post">
+        <div class="mb-3">
+            <label for="good" class="form-label">Товар</label>
+            <select id="good" class="form-select" th:name="good" required="true">
+                <option th:each="value: ${goods}"
+                        th:value="${value.id}"
+                        th:text="${value.name}">
+                </option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="count" class="form-label">Количество</label>
+            <input type="number" class="form-control" min="1" id="count" th:name="count"
+                   th:field="${cartGoodDto.count}" required="true">
+        </div>
+        <div class="mb-3">
+            <button type="submit" class="btn btn-primary button-fixed">
+                <span>Добавить</span>
+            </button>
+            <a class="btn btn-secondary button-fixed" th:href="@{/cart}">
+                Назад
+            </a>
+        </div>
+    </form>
+    <table class="table text-white" id="tbl-items">
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Price</th>
+            <th scope="col">Category</th>
+            <th scope="col">Count</th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="item, iterator: ${cartGoods}">
+            <td th:text="${item.key.id}"/>
+            <td th:text="${item.key.price}"/>
+            <td th:text="${item.key.category.name}"/>
+            <td th:text="${item.value}"/>
+            <td>
+                <div>
+                    <a type="button" class="m-1 btn btn-danger"
+                       th:attr="onclick=|confirm('Удалить запись?') && document.getElementById('remove-${item.key.id}').click()|">
+                        <i class="fa fa-trash"></i>
+                    </a>
+                </div>
+                <form th:action="@{'/cart?good=' + ${item.key.id}}" method="post">
+                    <button th:id="'remove-' + ${item.key.id}" type="submit" style="display: none">
+                        Удалить
+                    </button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

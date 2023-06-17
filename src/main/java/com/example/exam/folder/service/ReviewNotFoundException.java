@@ -1,0 +1,7 @@
+package com.example.exam.folder.service;
+
+public class ReviewNotFoundException extends RuntimeException {
+    public ReviewNotFoundException(Long id) {
+        super(String.format("Review with id [%s] is not found", id));
+    }
+}

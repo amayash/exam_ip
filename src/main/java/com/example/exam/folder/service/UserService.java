@@ -1,5 +1,6 @@
 package com.example.exam.folder.service;
 
+import com.example.exam.folder.model.Cart;
 import com.example.exam.folder.model.User;
 import com.example.exam.folder.model.UserRole;
 import com.example.exam.folder.model.UserSignupDto;
@@ -24,11 +25,13 @@ import java.util.Optional;
 @Service
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
+    private final CartService cartService;
     private final PasswordEncoder passwordEncoder;
     private final ValidatorUtil validatorUtil;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, ValidatorUtil validatorUtil) {
+    public UserService(UserRepository userRepository, CartService cartService, PasswordEncoder passwordEncoder, ValidatorUtil validatorUtil) {
         this.userRepository = userRepository;
+        this.cartService = cartService;
         this.passwordEncoder = passwordEncoder;
         this.validatorUtil = validatorUtil;
     }
@@ -43,7 +46,10 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public User addUser(String login, String password, String passwordConfirm) {
-        return createUser(login, password, passwordConfirm, UserRole.USER);
+        User user = createUser(login, password, passwordConfirm, UserRole.USER);
+        Cart cart = cartService.addCart();
+        assignCartToUser(user.getId(), cart.getId());
+        return user;
     }
 
     @Transactional
@@ -94,7 +100,7 @@ public class UserService implements UserDetailsService {
         userRepository.deleteById(id);
         return User;
     }
-
+    
     @Transactional
     public void deleteAllUsers() {
         userRepository.deleteAll();
@@ -108,5 +114,14 @@ public class UserService implements UserDetailsService {
         }
         return new org.springframework.security.core.userdetails.User(
                 userEntity.getLogin(), userEntity.getPassword(), Collections.singleton(userEntity.getRole()));
+    }
+
+    @Transactional
+    public void assignCartToUser(Long userId, Long cartId) {
+        User user = findUser(userId);
+        Cart cart = cartService.findCart(cartId);
+        user.setCart(cart);
+        cart.setUser(user);
+        userRepository.save(user);
     }
 }

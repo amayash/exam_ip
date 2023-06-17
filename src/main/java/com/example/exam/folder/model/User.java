@@ -23,8 +23,10 @@ public class User {
     @Size(min = 6, max = 64)
     private String password;
     private UserRole role;
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = {CascadeType.MERGE,CascadeType.REMOVE})
-    private List<Repository> repositories;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Cart cart;
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<Review> reviews;
     public User() {
     }
 
@@ -37,15 +39,23 @@ public class User {
     public User(String login, String password, UserRole role) {
         this.login = login;
         this.password = password;
-        this.repositories = new ArrayList<>();
         this.role = role;
     }
 
     public User(UserSignupDto userSignupDto) {
         this.login = userSignupDto.getLogin();
         this.password = userSignupDto.getPassword();
-        this.repositories = new ArrayList<>();
         this.role = UserRole.USER;
+    }
+
+    public List<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReview(Review review) {
+        if (review.getUser().equals(this)) {
+            this.reviews.add(review);
+        }
     }
 
     @Override
@@ -94,13 +104,11 @@ public class User {
         this.password = password;
     }
 
-    public List<Repository> getRepositories() {
-        return repositories;
+    public Cart getCart() {
+        return cart;
     }
 
-    public void setRepository(Repository repository) {
-        if (repository.getUser().equals(this)) {
-            this.repositories.add(repository);
-        }
+    public void setCart(Cart cart) {
+        this.cart = cart;
     }
 }
