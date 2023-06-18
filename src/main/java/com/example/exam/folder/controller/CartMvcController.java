@@ -52,7 +52,7 @@ public class CartMvcController {
         return "cartgood";
     }
 
-    @PostMapping(value = {""})
+    @PostMapping(value = {"/"})
     public String editCart(@RequestParam("good") Long good,
                            @RequestParam(value = "count", required = false) Integer count,
                            Model model,
