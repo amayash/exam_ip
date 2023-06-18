@@ -3,7 +3,7 @@ package com.example.exam.folder.service;
 import com.example.exam.folder.model.User;
 import com.example.exam.folder.model.UserRole;
 import com.example.exam.folder.model.UserSignupDto;
-import com.example.exam.folder.repository.UserRepository;
+import com.example.exam.folder.playlist.UserRepository;
 import com.example.exam.util.validation.ValidatorUtil;
 import jakarta.validation.ValidationException;
 import org.springframework.data.domain.Page;

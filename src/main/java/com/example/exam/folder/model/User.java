@@ -24,7 +24,7 @@ public class User {
     private String password;
     private UserRole role;
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = {CascadeType.MERGE,CascadeType.REMOVE})
-    private List<Repository> repositories;
+    private List<Playlist> playlists;
     public User() {
     }
 
@@ -37,14 +37,14 @@ public class User {
     public User(String login, String password, UserRole role) {
         this.login = login;
         this.password = password;
-        this.repositories = new ArrayList<>();
+        this.playlists = new ArrayList<>();
         this.role = role;
     }
 
     public User(UserSignupDto userSignupDto) {
         this.login = userSignupDto.getLogin();
         this.password = userSignupDto.getPassword();
-        this.repositories = new ArrayList<>();
+        this.playlists = new ArrayList<>();
         this.role = UserRole.USER;
     }
 
@@ -94,13 +94,13 @@ public class User {
         this.password = password;
     }
 
-    public List<Repository> getRepositories() {
-        return repositories;
+    public List<Playlist> getRepositories() {
+        return playlists;
     }
 
-    public void setRepository(Repository repository) {
-        if (repository.getUser().equals(this)) {
-            this.repositories.add(repository);
+    public void setPlaylist(Playlist playlist) {
+        if (playlist.getUser().equals(this)) {
+            this.playlists.add(playlist);
         }
     }
 }
