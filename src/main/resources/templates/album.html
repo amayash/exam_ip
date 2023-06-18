@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      layout:decorate="~{default}">
+<head>
+</head>
+<body>
+<div layout:fragment="content_header" th:text="'Альбомы'"></div>
+<div layout:fragment="content">
+  <div class="d-flex justify-content-end" sec:authorize="hasRole('ROLE_ADMIN')">
+    <a class="btn btn-success button-fixed"
+       th:href="@{/album/edit}">
+      <i class="fa-solid fa-plus"></i>
+    </a>
+  </div>
+  <table class="table text-white" id="tbl-items">
+    <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">Name</th>
+      <th scope="col">Year</th>
+      <th scope="col">Singer</th>
+      <th scope="col"></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="item, iterator: ${albums}">
+      <td th:text="${item.id}"/>
+      <td><a th:text="${item.name}" th:href="@{/album/{id}(id=${item.id})}"/></td>
+      <td th:text="${item.releaseYear}"/>
+      <td th:text="${item.singerName}"/>
+      <td>
+        <div>
+          <a type="button" class="m-1 btn btn-primary"
+             th:href="@{/album/edit/{id}(id=${item.id})}"
+             sec:authorize="hasRole('ROLE_ADMIN')">
+            <i class="fa fa-pencil"></i>
+          </a>
+          <a type="button" class="m-1 btn btn-danger"
+             sec:authorize="hasRole('ROLE_ADMIN')"
+             th:attr="onclick=|confirm('Удалить запись?') && document.getElementById('remove-${item.id}').click()|">
+            <i class="fa fa-trash"></i>
+          </a>
+        </div>
+        <form th:action="@{/album/delete/{id}(id=${item.id})}" method="post"
+              sec:authorize="hasRole('ROLE_ADMIN')">
+          <button th:id="'remove-' + ${item.id}" type="submit" style="display: none">
+            Удалить
+          </button>
+        </form>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+</body>
+</html>

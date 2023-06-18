@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -16,11 +18,8 @@ public class Singer {
     @NotBlank(message = "name can't be null or empty")
     @Size(min = 3, max = 64)
     private String name;
-    @ManyToMany
-    @JoinTable(name = "singer_sing",
-            joinColumns = @JoinColumn(name = "singer_fk"),
-            inverseJoinColumns = @JoinColumn(name = "sing_fk"))
-    private Set<Sing> sings = new HashSet<>();
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "singer", cascade = {CascadeType.MERGE,CascadeType.REMOVE})
+    private List<Album> albums = new ArrayList<>();
 
     public Singer(String name) {
         this.name = name;
@@ -28,6 +27,16 @@ public class Singer {
 
     public Singer() {
         
+    }
+
+    public List<Album> getAlbums() {
+        return albums;
+    }
+
+    public void setAlbum(Album album) {
+        if (album.getSinger().equals(this)) {
+            this.albums.add(album);
+        }
     }
 
     public Long getId() {
@@ -44,23 +53,5 @@ public class Singer {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Set<Sing> getSings() {
-        return sings;
-    }
-
-    public void setSing(Sing p) {
-        sings.add(p);
-        if (!p.getSingers().contains(this)) {
-            p.setSinger(this);
-        }
-    }
-
-    public void removeSing(Sing p) {
-        sings.remove(p);
-        if (p.getSingers().contains(this)) {
-            p.removeSinger(this);
-        }
     }
 }

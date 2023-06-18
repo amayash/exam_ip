@@ -15,7 +15,10 @@ public class PlaylistDto {
         this.id = playlist.getId();
         this.name = playlist.getName();
         this.userId = playlist.getUser().getId();
-        this.sings = playlist.getSings().stream().map(SingDto::new).ToList();
+        this.sings = playlist.getSings().stream().map(SingDto::new).toList();
+    }
+
+    public PlaylistDto() {
     }
 
     public long getId() {

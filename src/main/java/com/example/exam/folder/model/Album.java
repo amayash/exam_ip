@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import org.hibernate.annotations.Check;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,18 +18,29 @@ public class Album {
     @Size(min = 3, max = 64)
     private String name;
     @Column(nullable = false, length = 4)
-    @NotNull(message = "year can't be null or empty")
-    @Check(constraints = "value >= 1900 AND value <= 2023")
-    private Integer year;
+    @NotNull(message = "releaseYear can't be null or empty")
+    private Integer releaseYear;
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "album", cascade = {CascadeType.MERGE,CascadeType.REMOVE})
     private List<Sing> sings = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "singer_fk")
+    protected Singer singer;
+
     public Album(String name, Integer year) {
         this.name = name;
-        this.year = year;
+        this.releaseYear = year;
     }
 
     public Album() {
 
+    }
+
+    public Singer getSinger() {
+        return singer;
+    }
+
+    public void setSinger(Singer singer) {
+        this.singer = singer;
     }
 
     public List<Sing> getSings() {
@@ -59,11 +69,11 @@ public class Album {
         this.name = name;
     }
 
-    public Integer getYear() {
-        return year;
+    public Integer getReleaseYear() {
+        return releaseYear;
     }
 
-    public void setYear(Integer year) {
-        this.year = year;
+    public void setReleaseYear(Integer releaseYear) {
+        this.releaseYear = releaseYear;
     }
 }

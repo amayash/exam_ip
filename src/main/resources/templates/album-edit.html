@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{default}">
+<head>
+</head>
+<body>
+<div layout:fragment="content_header">Альбом</div>
+<div layout:fragment="content">
+  <div th:text="${errors}" class="margin-bottom alert-danger"></div>
+  <form action="#" th:action="@{/album/{id}(id=${id})}" th:object="${albumDto}" enctype="multipart/form-data"
+        method="post">
+    <div class="mb-3">
+      <label for="name" class="form-label">Название</label>
+      <input type="text" class="form-control" id="name" th:field="${albumDto.name}" required="true">
+    </div>
+    <div class="mb-3" th:if="${id == null}">
+      <label for="releaseYear" class="form-label">Год</label>
+      <input type="text" class="form-control" id="releaseYear" th:field="${albumDto.releaseYear}" required="true">
+    </div>
+    <div class="mb-3" th:if="${id == null && singerId == null}">
+      <label for="singerId" class="form-label">Исполнитель</label>
+      <select id="singerId" class="form-select" th:name="singerId" required="true">
+        <option th:each="value: ${singers}"
+                th:value="${value.id}"
+                th:text="${value.name}">
+        </option>
+      </select>
+    </div>
+    <div class="mb-3" th:if="${id == null && singerId != null}" style="display: none">
+      <input type="text" th:field="${albumDto.singerId}" required="true">
+    </div>
+    <div class="mb-3">
+      <button type="submit" class="btn btn-primary button-fixed">
+        <span th:if="${id == null}">Добавить</span>
+        <span th:if="${id != null}">Обновить</span>
+      </button>
+      <a class="btn btn-secondary button-fixed" th:href="@{/album}">
+        Назад
+      </a>
+    </div>
+  </form>
+</div>
+</body>
+</html>

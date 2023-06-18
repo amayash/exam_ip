@@ -31,6 +31,10 @@
                 </ul>
                 <ul class="navbar-nav" sec:authorize="isAuthenticated()">
                     <a class="nav-link" href="/">Главная</a>
+                    <a class="nav-link" href="/album">Альбомы</a>
+                    <a class="nav-link" href="/singer">Исполнители</a>
+                    <a class="nav-link" href="/sing">Песни</a>
+                    <a class="nav-link" href="/playlist" sec:authorize="hasRole('ROLE_USER')">Плейлисты</a>
                     <a sec:authorize="hasRole('ROLE_ADMIN')" class="nav-link" href="/user">Пользователи</a>
                     <a class="nav-link" href="/h2-console/" target="_blank" sec:authorize="hasRole('ROLE_ADMIN')">Консоль H2</a>
                     <a class="nav-link" href="/logout">Выход</a>

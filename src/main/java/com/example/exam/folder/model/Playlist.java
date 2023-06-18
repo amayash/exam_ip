@@ -72,8 +72,8 @@ public class Playlist {
         this.user = user;
     }
 
-    public Set<Sing> getSings() {
-        return sings;
+    public List<Sing> getSings() {
+        return sings.stream().toList();
     }
 
     public void setSing(Sing p) {

@@ -17,11 +17,13 @@ import java.util.Optional;
 public class PlaylistService {
     private final PlaylistRepository playlistRepository;
     private final UserService userService;
+    private final SingService singService;
     private final ValidatorUtil validatorUtil;
 
-    public PlaylistService(PlaylistRepository playlistRepository, UserService userService, ValidatorUtil validatorUtil) {
+    public PlaylistService(PlaylistRepository playlistRepository, UserService userService, SingService singService, ValidatorUtil validatorUtil) {
         this.playlistRepository = playlistRepository;
         this.userService = userService;
+        this.singService = singService;
         this.validatorUtil = validatorUtil;
     }
 
@@ -41,22 +43,29 @@ public class PlaylistService {
     }
 
     @Transactional
-    public Playlist addSing(Long id, Sing p) {
+    public Playlist addSing(Long id, Long singId) {
         Playlist e = findPlaylist(id);
-        e.setSing(p);
+        Sing sing = singService.findSing(singId);
+        e.setSing(sing);
         return playlistRepository.save(e);
     }
 
     @Transactional
-    public Playlist deleteSing(Long id, Sing p) {
+    public Playlist deleteSing(Long id, Long singId) {
         Playlist e = findPlaylist(id);
-        e.removeSing(p);
+        Sing sing = singService.findSing(singId);
+        e.removeSing(sing);
         return playlistRepository.save(e);
     }
 
     @Transactional
     public List<Playlist> findAllPlaylists() {
         return playlistRepository.findAll();
+    }
+
+    @Transactional
+    public List<Playlist> findAllPlaylistsByUser(Long id) {
+        return playlistRepository.findAllByUserId(id);
     }
 
     @Transactional

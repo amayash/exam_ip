@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{default}">
+<head>
+</head>
+<body>
+<div layout:fragment="content_header">Песня</div>
+<div layout:fragment="content">
+    <div th:text="${errors}" class="margin-bottom alert-danger"></div>
+    <form action="#" th:action="@{/sing/{id}(id=${id})}" th:object="${singDto}" enctype="multipart/form-data"
+          method="post">
+        <div class="mb-3">
+            <label for="name" class="form-label">Название</label>
+            <input type="text" class="form-control" id="name" th:field="${singDto.name}" required="true">
+        </div>
+        <div class="mb-3" th:if="${id == null}">
+            <label for="duration" class="form-label">Длительность (секунды)</label>
+            <input type="text" class="form-control" id="duration" th:field="${singDto.duration}" required="true">
+        </div>
+        <div class="mb-3" th:if="${id == null}">
+            <label for="timestamp" class="form-label">Дата</label>
+            <input type="datetime-local" class="form-control" id="timestamp" th:field="${singDto.timestamp}"
+                   required="true">
+        </div>
+        <div class="mb-3" th:if="${id == null && albumId == null}">
+            <label for="albumId" class="form-label">Альбом</label>
+            <select id="albumId" class="form-select" th:name="albumId" required="true">
+                <option th:each="value: ${albums}"
+                        th:value="${value.id}"
+                        th:text="${value.name}">
+                </option>
+            </select>
+        </div>
+        <div class="mb-3" th:if="${id == null && albumId != null}" style="display: none">
+            <input type="text" th:field="${singDto.albumId}" required="true">
+        </div>
+        <div class="mb-3">
+            <button type="submit" class="btn btn-primary button-fixed">
+                <span th:if="${id == null}">Добавить</span>
+                <span th:if="${id != null}">Обновить</span>
+            </button>
+            <a class="btn btn-secondary button-fixed" th:href="@{/sing}">
+                Назад
+            </a>
+        </div>
+    </form>
+</div>
+</body>
+</html>

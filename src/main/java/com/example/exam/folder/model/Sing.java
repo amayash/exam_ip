@@ -30,9 +30,7 @@ public class Sing {
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     protected LocalDateTime timestamp;
     @ManyToMany(mappedBy = "sings")
-    private Set<Playlist> playlists = new HashSet<>();
-    @ManyToMany(mappedBy = "sings")
-    private Set<Singer> singers = new HashSet<>();
+    private List<Playlist> playlists = new ArrayList<>();
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "album_fk")
     private Album album;
@@ -66,11 +64,7 @@ public class Sing {
         this.timestamp = timestamp;
     }
 
-    public Set<Singer> getSingers() {
-        return singers;
-    }
-
-    public Set<Playlist> getPlaylists() {
+    public List<Playlist> getPlaylists() {
         return playlists;
     }
 
@@ -83,20 +77,6 @@ public class Sing {
 
     public void removePlaylist(Playlist p) {
         playlists.remove(p);
-        if (p.getSings().contains(this)) {
-            p.removeSing(this);
-        }
-    }
-
-    public void setSinger(Singer p) {
-        singers.add(p);
-        if (!p.getSings().contains(this)) {
-            p.setSing(this);
-        }
-    }
-
-    public void removeSinger(Singer p) {
-        singers.remove(p);
         if (p.getSings().contains(this)) {
             p.removeSing(this);
         }

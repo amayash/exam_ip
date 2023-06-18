@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      layout:decorate="~{default}">
+<head>
+</head>
+<body>
+<div layout:fragment="content_header" th:text="'Песни плейлиста'"></div>
+<div layout:fragment="content">
+    <form action="#" th:action="'/playlist/'+${id}+'/add'" th:object="${singDto}" enctype="multipart/form-data"
+          method="post">
+        <div class="mb-3" sec:authorize="hasRole('ROLE_USER')">
+            <label for="singId" class="form-label">Песня</label>
+            <select id="singId" class="form-select" th:name="singId" required="true">
+                <option th:each="value: ${singsForSelect}"
+                        th:value="${value.id}"
+                        th:text="${value.name}">
+                </option>
+            </select>
+            <button type="submit" class="btn btn-primary button-fixed">
+                <span>Добавить</span>
+            </button>
+        </div>
+    </form>
+    <table class="table text-white" id="tbl-items">
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Duration</th>
+            <th scope="col">Timestamp</th>
+            <th scope="col">Album</th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="item, iterator: ${sings}">
+            <td th:text="${item.id}"/>
+            <td th:text="${item.name}"/>
+            <td th:text="${item.duration}"/>
+            <td th:text="${item.timestamp}"/>
+            <td th:text="${item.albumName}"/>
+            <td>
+                <div>
+                    <a type="button" class="m-1 btn btn-danger"
+                       sec:authorize="hasRole('ROLE_USER')"
+                       th:attr="onclick=|confirm('Удалить запись?') && document.getElementById('remove-${item.id}').click()|">
+                        <i class="fa fa-trash"></i>
+                    </a>
+                </div>
+                <form th:action="'/playlist/'+${id}+'/remove/'+${item.id}" method="post"
+                      sec:authorize="hasRole('ROLE_USER')">
+                    <button th:id="'remove-' + ${item.id}" type="submit" style="display: none">
+                        Удалить
+                    </button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
