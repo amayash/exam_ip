@@ -15,11 +15,13 @@ public class Branch {
     @NotBlank(message = "name can't be null or empty")
     @Size(min = 3, max = 64)
     private String name;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "repository_fk")
     protected Repository repository;
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "branch", cascade = {CascadeType.MERGE,CascadeType.REMOVE})
     private List<Commit> commits;
+    @ManyToOne
+    private Branch branch;
 
     public Branch(String name) {
         this.name = name;
