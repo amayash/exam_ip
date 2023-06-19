@@ -6,7 +6,7 @@
 <head>
 </head>
 <body>
-<div layout:fragment="content_header" th:text="'Песни исполнителя'"></div>
+<div layout:fragment="content_header" th:text="'Альбомы исполнителя'"></div>
 <div layout:fragment="content">
     <div class="d-flex justify-content-end" sec:authorize="hasRole('ROLE_ADMIN')">
         <a class="btn btn-success button-fixed"
@@ -27,7 +27,7 @@
         <tbody>
         <tr th:each="item, iterator: ${albums}">
             <td th:text="${item.id}"/>
-            <td th:text="${item.name}"/>
+            <td><a th:text="${item.name}" th:href="@{/album/{id}(id=${item.id})}"/></td>
             <td th:text="${item.releaseYear}"/>
             <td th:text="${item.singerName}"/>
             <td>

@@ -7,7 +7,6 @@ import jakarta.validation.constraints.Size;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -30,7 +29,7 @@ public class Sing {
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     protected LocalDateTime timestamp;
     @ManyToMany(mappedBy = "sings")
-    private List<Playlist> playlists = new ArrayList<>();
+    private Set<Playlist> playlists = new HashSet<>();
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "album_fk")
     private Album album;
@@ -44,7 +43,14 @@ public class Sing {
     public Sing() {
 
     }
-    
+
+    @PreRemove
+    public void removePlaylists() {
+        for (var playlist : playlists) {
+            playlist.getSings().remove(this);
+        }
+    }
+
     public Album getAlbum() {
         return album;
     }
@@ -55,7 +61,7 @@ public class Sing {
             album.setSing(this);
         }
     }
-    
+
     public LocalDateTime getTimestamp() {
         return timestamp;
     }
@@ -64,7 +70,7 @@ public class Sing {
         this.timestamp = timestamp;
     }
 
-    public List<Playlist> getPlaylists() {
+    public Set<Playlist> getPlaylists() {
         return playlists;
     }
 
