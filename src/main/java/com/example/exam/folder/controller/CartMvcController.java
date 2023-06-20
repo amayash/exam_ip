@@ -4,8 +4,9 @@ import com.example.exam.folder.model.Cart;
 import com.example.exam.folder.model.User;
 import com.example.exam.folder.model.UserRole;
 import com.example.exam.folder.service.CartService;
-import com.example.exam.folder.service.GoodService;
+import com.example.exam.folder.service.BookService;
 import com.example.exam.folder.service.UserService;
+import groovy.lang.Tuple2;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,6 +14,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -22,47 +24,55 @@ import java.util.Objects;
 public class CartMvcController {
     private final CartService cartService;
     private final UserService userService;
-    private final GoodService goodService;
+    private final BookService bookService;
 
-    public CartMvcController(CartService cartService, UserService userService, GoodService goodService) {
+    public CartMvcController(CartService cartService, UserService userService, BookService bookService) {
         this.cartService = cartService;
         this.userService = userService;
-        this.goodService = goodService;
+        this.bookService = bookService;
     }
 
-    @GetMapping(value = {"/edit"})
+    @GetMapping(value = {"/edit/{id}", "/edit"})
     public String editCart(Model model,
-                           Principal principal) {
+                           Principal principal,
+                           @PathVariable(required = false) Long id) {
         User user = userService.findByLogin(principal.getName());
-        Cart cart = user.getCart();
-        List<CartGoodDto> temp = cart.getGoods()
-                .stream().map(x -> new CartGoodDto(new GoodDto(x.getGood()),
-                        x.getCart().getId(), x.getCount())).toList();
-        List<GoodDto> goods = goodService.findAllGoods().stream()
-                .map(GoodDto::new)
-                .toList();
-        HashMap<GoodDto, Integer> cartGoods = new HashMap<>();
-        for (var os : temp) {
-            cartGoods.put(os.getGood(), os.getCount());
+        if (id == null && user.getRole() == UserRole.ADMIN)
+            return "redirect:/cart/edit/"+id;
+        if (id != null && user.getRole() == UserRole.ADMIN) {
+            user = userService.findUser(id);
         }
-        model.addAttribute("cartGoods", cartGoods);
-        model.addAttribute("goods", goods);
-        model.addAttribute("cartGoodDto", new CartGoodDto());
+        if (user.getRole() == UserRole.ADMIN) return "redirect:/user";
+        Cart cart = user.getCart();
+        List<CartBookDto> temp = cart.getBooks()
+                .stream().map(x -> new CartBookDto(new BookDto(x.getBook()),
+                        x.getCart().getId(), x.getCount(), x.getTimestamp())).toList();
+        List<BookDto> books = bookService.findAllBooks().stream()
+                .map(BookDto::new)
+                .toList();
 
-        return "cartgood";
+        model.addAttribute("cartBooks", temp);
+        model.addAttribute("books", books);
+        model.addAttribute("cartBookDto", new CartBookDto());
+
+        return "cartbook";
     }
 
-    @PostMapping(value = {"/"})
-    public String editCart(@RequestParam("good") Long good,
+    @PostMapping(value = {"/{id}","/"})
+    public String editCart(@PathVariable(required = false) Long id,
+                           @RequestParam("book") Long book,
                            @RequestParam(value = "count", required = false) Integer count,
                            Model model,
                            Principal principal) {
         User user = userService.findByLogin(principal.getName());
-        Cart cart = cartService.findCart(user.getCart().getId());
+        if (id != null && user.getRole() == UserRole.ADMIN) {
+            user = userService.findUser(id);
+        }
+        Cart cart = user.getCart();
         if (count == null)
-            cartService.deleteGoodInCart(cart.getId(), good, Integer.MAX_VALUE);
+            cartService.deleteBookInCart(cart.getId(), book, Integer.MAX_VALUE);
         else if (count > 0)
-            cartService.addGood(cart.getId(), good, count);
-        return "redirect:/cart/edit";
+            cartService.addBook(cart.getId(), book, count);
+        return "redirect:/cart/edit/"+id;
     }
 }

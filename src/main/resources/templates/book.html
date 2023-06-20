@@ -6,28 +6,17 @@
 <head>
 </head>
 <body>
-<div layout:fragment="content_header" th:text="'Товары'"></div>
+<div layout:fragment="content_header" th:text="'Книги'"></div>
 <div layout:fragment="content">
     <div class="d-flex justify-content-end" sec:authorize="hasRole('ROLE_ADMIN')">
         <a class="btn btn-success button-fixed"
-           th:href="@{/good/edit}">
+           th:href="@{/book/edit}">
             <i class="fa-solid fa-plus"></i>
         </a>
     </div>
     <div class="d-flex justify-content-between align-items-center">
-        <form action="#" th:action="@{/good/search/}" class="d-flex">
+        <form action="#" th:action="@{/book/search}" class="d-flex">
             <input class="form-control m-1" type="text" name="request" required="true"/>
-            <button class="btn btn-secondary m-1" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
-        </form>
-    </div>
-    <div class="d-flex justify-content-between align-items-center">
-        <form action="#" th:action="@{/good/search/category/}" class="d-flex">
-            <select id="categoryid" class="form-select m-1" th:name="request" required="true">
-                <option th:each="value: ${categories}"
-                        th:value="${value.id}"
-                        th:text="${value.name}">
-                </option>
-            </select>
             <button class="btn btn-secondary m-1" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
         </form>
     </div>
@@ -36,30 +25,25 @@
         <tr>
             <th scope="col">ID</th>
             <th scope="col">Name</th>
-            <th scope="col">Price</th>
             <th scope="col">Category</th>
+            <th scope="col">Authors</th>
             <th scope="col">Capacity</th>
             <th scope="col">MaxCount</th>
             <th scope="col"></th>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="item, iterator: ${goods}">
+        <tr th:each="item, iterator: ${books}">
             <td th:text="${item.id}"/>
             <td th:text="${item.name}"/>
-            <td th:text="${item.price}"/>
             <td th:text="${item.category.name}"/>
+            <td th:text="${#strings.listJoin(item.authors,',')}"/>
             <td th:text="${item.capacity} == null ? ${item.maxCount} : ${item.maxCount}-${item.capacity}"/>
             <td th:text="${item.maxCount}"/>
             <td>
                 <div>
                     <a type="button" class="m-1 btn btn-primary"
-                       th:href="'/good/'+${item.id}+'/review/'"
-                       sec:authorize="hasRole('ROLE_USER')">
-                        <i class="fa fa-pencil"></i>
-                    </a>
-                    <a type="button" class="m-1 btn btn-primary"
-                       th:href="@{/good/edit/{id}(id=${item.id})}"
+                       th:href="@{/book/edit/{id}(id=${item.id})}"
                        sec:authorize="hasRole('ROLE_ADMIN')">
                         <i class="fa fa-pencil"></i>
                     </a>
@@ -69,7 +53,7 @@
                         <i class="fa fa-trash"></i>
                     </a>
                 </div>
-                <form th:action="@{/good/delete/{id}(id=${item.id})}" method="post"
+                <form th:action="@{/book/delete/{id}(id=${item.id})}" method="post"
                       sec:authorize="hasRole('ROLE_ADMIN')">
                     <button th:id="'remove-' + ${item.id}" type="submit" style="display: none">
                         Удалить

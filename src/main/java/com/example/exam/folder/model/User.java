@@ -25,8 +25,6 @@ public class User {
     private UserRole role;
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Cart cart;
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.REMOVE)
-    private List<Review> reviews;
     public User() {
     }
 
@@ -46,16 +44,6 @@ public class User {
         this.login = userSignupDto.getLogin();
         this.password = userSignupDto.getPassword();
         this.role = UserRole.USER;
-    }
-
-    public List<Review> getReviews() {
-        return reviews;
-    }
-
-    public void setReview(Review review) {
-        if (review.getUser().equals(this)) {
-            this.reviews.add(review);
-        }
     }
 
     @Override

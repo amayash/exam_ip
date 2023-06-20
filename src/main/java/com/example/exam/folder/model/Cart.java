@@ -11,13 +11,13 @@ public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @OneToMany(mappedBy = "cart", fetch = FetchType.EAGER, cascade =
+    @OneToMany(mappedBy = "cart", fetch = FetchType.LAZY, cascade =
             {
                     CascadeType.REMOVE,
                     CascadeType.MERGE,
                     CascadeType.PERSIST
             }, orphanRemoval = true)
-    private List<CartGood> goods;
+    private List<CartBook> books;
 
     @OneToOne
     @JoinColumn(name = "user_fk")
@@ -26,17 +26,17 @@ public class Cart {
     public Cart() {
     }
 
-    public void addGood(CartGood cartGood) {
-        if (goods == null) {
-            goods = new ArrayList<>();
+    public void addBook(CartBook cartBook) {
+        if (books == null) {
+            books = new ArrayList<>();
         }
-        if (!goods.contains(cartGood))
-            this.goods.add(cartGood);
+        if (!books.contains(cartBook))
+            this.books.add(cartBook);
     }
 
-    public void removeGood(CartGood cartGood){
-        if (goods.contains(cartGood))
-            this.goods.remove(cartGood);
+    public void removeBook(CartBook cartBook){
+        if (books.contains(cartBook))
+            this.books.remove(cartBook);
     }
 
     @Override
@@ -47,8 +47,8 @@ public class Cart {
         return Objects.equals(id, r.id);
     }
 
-    public List<CartGood> getGoods() {
-        return goods;
+    public List<CartBook> getBooks() {
+        return books;
     }
 
     public User getUser() {

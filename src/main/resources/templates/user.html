@@ -11,16 +11,15 @@
         <thead>
         <tr>
             <th scope="col">ID</th>
-            <th scope="col">Логин</th>
-            <th scope="col">Пароль</th>
+            <th scope="col">Login</th>
+            <th scope="col">Role</th>
             <th scope="col"></th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="user, iterator: ${users}">
             <td th:text="${user.id}"/>
-            <td th:text="${user.login}"/>
-            <td th:text="${user.password}"/>
+            <td><a th:text="${user.login}" th:href="@{/cart/edit/{id}(id=${user.id})}"/></td>
             <td th:text="${user.role}"/>
             <td>
                 <div>

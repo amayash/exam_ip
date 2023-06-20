@@ -16,14 +16,14 @@ public class Category {
     @NotBlank(message = "name can't be null or empty")
     @Size(min = 3, max = 64)
     private String name;
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "category", cascade = CascadeType.REMOVE)
-    private List<Good> goods;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "category", cascade = CascadeType.REMOVE)
+    private List<Book> books;
     public Category() {
     }
 
     public Category(String name) {
         this.name = name;
-        this.goods = new ArrayList<>();
+        this.books = new ArrayList<>();
     }
 
     public Long getId() {
@@ -42,13 +42,13 @@ public class Category {
         this.name = name;
     }
 
-    public List<Good> getGoods() {
-        return goods;
+    public List<Book> getBooks() {
+        return books;
     }
 
-    public void setGood(Good good) {
-        if (good.getCategory().equals(this)) {
-            this.goods.add(good);
+    public void setBook(Book book) {
+        if (book.getCategory().equals(this)) {
+            this.books.add(book);
         }
     }
 }

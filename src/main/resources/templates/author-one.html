@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      layout:decorate="~{default}">
+<head>
+</head>
+<body>
+<div layout:fragment="content_header" th:text="'Книги автора'"></div>
+<div layout:fragment="content">
+<!--    <form action="#" th:action="'/author/'+${id}+'/add'" th:object="${bookDto}" enctype="multipart/form-data"
+          method="post" sec:authorize="hasRole('ROLE_ADMIN')">
+        <div class="mb-3">
+            <label for="bookId" class="form-label">Книга</label>
+            <select id="bookId" class="form-select" th:name="bookId" required="true">
+                <option th:each="value: ${booksForSelect}"
+                        th:value="${value.id}"
+                        th:text="${value.name}">
+                </option>
+            </select>
+            <button type="submit" class="btn btn-primary button-fixed">
+                <span>Добавить</span>
+            </button>
+        </div>
+    </form>-->
+    <table class="table text-white" id="tbl-items">
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Category</th>
+            <th scope="col">Authors</th>
+            <th scope="col">Capacity</th>
+            <th scope="col">MaxCount</th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="item, iterator: ${books}">
+            <td th:text="${item.id}"/>
+            <td th:text="${item.name}"/>
+            <td th:text="${item.category.name}"/>
+            <td th:text="${#strings.listJoin(item.authors,',')}"/>
+            <td th:text="${item.capacity} == null ? ${item.maxCount} : ${item.maxCount}-${item.capacity}"/>
+            <td th:text="${item.maxCount}"/>
+            <td>
+                <div>
+                    <a type="button" class="m-1 btn btn-danger"
+                       sec:authorize="hasRole('ROLE_ADMIN')"
+                       th:attr="onclick=|confirm('Удалить запись?') && document.getElementById('remove-${item.id}').click()|">
+                        <i class="fa fa-trash"></i>
+                    </a>
+                </div>
+                <form th:action="'/author/'+${id}+'/remove/'+${item.id}" method="post"
+                      sec:authorize="hasRole('ROLE_ADMIN')">
+                    <button th:id="'remove-' + ${item.id}" type="submit" style="display: none">
+                        Удалить
+                    </button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

@@ -7,18 +7,18 @@ import java.util.List;
 
 public class CartDto {
     private long id;
-    private List<CartGoodDto> goods;
+    private List<CartBookDto> books;
 
     public CartDto() {
     }
 
     public CartDto(Cart cart) {
         this.id = cart.getId();
-        if (cart.getGoods() != null && cart.getGoods().size() > 0)
-            this.goods = cart.getGoods()
+        if (cart.getBooks() != null && cart.getBooks().size() > 0)
+            this.books = cart.getBooks()
                     .stream()
-                    .map(x -> new CartGoodDto(new GoodDto(x.getGood()),
-                            x.getId().getCartId(), x.getCount())).toList();
+                    .map(x -> new CartBookDto(new BookDto(x.getBook()),
+                            x.getId().getCartId(), x.getCount(), x.getTimestamp())).toList();
     }
 
     public long getId() {
@@ -29,11 +29,11 @@ public class CartDto {
         this.id = id;
     }
 
-    public List<CartGoodDto> getGoods() {
-        return goods;
+    public List<CartBookDto> getBooks() {
+        return books;
     }
 
-    public void setGoods(List<CartGoodDto> goods) {
-        this.goods = goods;
+    public void setBooks(List<CartBookDto> books) {
+        this.books = books;
     }
 }

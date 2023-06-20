@@ -1,25 +1,26 @@
 package com.example.exam.folder.service;
 
 import com.example.exam.folder.model.Cart;
-import com.example.exam.folder.model.CartGood;
-import com.example.exam.folder.model.Good;
+import com.example.exam.folder.model.CartBook;
+import com.example.exam.folder.model.Book;
 import com.example.exam.folder.repository.CartRepository;
 import com.example.exam.util.validation.ValidatorUtil;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class CartService {
     private final CartRepository cartRepository;
-    private final GoodService goodService;
+    private final BookService bookService;
     private final ValidatorUtil validatorUtil;
-    public CartService(CartRepository cartRepository, GoodService goodService, ValidatorUtil validatorUtil) {
+    public CartService(CartRepository cartRepository, BookService bookService, ValidatorUtil validatorUtil) {
         this.cartRepository = cartRepository;
-        this.goodService = goodService;
+        this.bookService = bookService;
         this.validatorUtil = validatorUtil;
     }
 
@@ -31,25 +32,25 @@ public class CartService {
     }
 
     @Transactional
-    public Cart addGood(Long id, Long goodId, Integer count) {
-        final Good currentGood = goodService.findGood(goodId);
+    public Cart addBook(Long id, Long bookId, Integer count) {
+        final Book currentBook = bookService.findBook(bookId);
         final Cart currentCart = findCart(id);
-        final CartGood currentCartGood = cartRepository.getCartGood(id, goodId);
+        final CartBook currentCartBook = cartRepository.getCartBook(id, bookId);
 
-        final Integer currentGoodCapacity = currentGood.getMaxCount() - goodService.getCapacity(goodId);
-        if (currentGoodCapacity < count ||
-                (currentCartGood != null && currentCartGood.getCount() + count > currentGood.getMaxCount())) {
-            throw new IllegalArgumentException(String.format("No more goods in good. Capacity: %1$s. Count: %2$s",
-                    currentGoodCapacity, count));
+        final Integer currentBookCapacity = currentBook.getMaxCount() - bookService.getCapacity(bookId);
+        if (currentBookCapacity < count ||
+                (currentCartBook != null && currentCartBook.getCount() + count > currentBook.getMaxCount())) {
+            throw new IllegalArgumentException(String.format("No more books in book. Capacity: %1$s. Count: %2$s",
+                    currentBookCapacity, count));
         }
 
-        if (currentCartGood == null) {
-            currentCart.addGood(new CartGood(currentCart, currentGood, count));
+        if (currentCartBook == null) {
+            currentCart.addBook(new CartBook(currentCart, currentBook, count, LocalDateTime.now()));
         }
-        else if (currentCartGood.getCount() + count <= currentGood.getMaxCount()) {
-            currentCart.removeGood(currentCartGood);
-            currentCart.addGood(new CartGood(currentCart, currentGood,
-                    currentCartGood.getCount() + count));
+        else if (currentCartBook.getCount() + count <= currentBook.getMaxCount()) {
+            currentCart.removeBook(currentCartBook);
+            currentCart.addBook(new CartBook(currentCart, currentBook,
+                    currentCartBook.getCount() + count, currentCartBook.getTimestamp()));
         }
 
         return cartRepository.save(currentCart);
@@ -74,20 +75,20 @@ public class CartService {
     }
 
     @Transactional
-    public Cart deleteGoodInCart(Long id, Long good, Integer count) {
+    public Cart deleteBookInCart(Long id, Long book, Integer count) {
         final Cart currentCart = findCart(id);
-        final Good currentGood = goodService.findGood(good);
-        final CartGood currentCartGood = cartRepository.getCartGood(id, good);
-        if (currentCartGood == null)
+        final Book currentBook = bookService.findBook(book);
+        final CartBook currentCartBook = cartRepository.getCartBook(id, book);
+        if (currentCartBook == null)
             throw new EntityNotFoundException();
 
-        if (count >= currentCartGood.getCount()) {
-            currentCart.removeGood(currentCartGood);
+        if (count >= currentCartBook.getCount()) {
+            currentCart.removeBook(currentCartBook);
         }
         else {
-            currentCart.removeGood(currentCartGood);
-            currentCart.addGood(new CartGood(currentCart, currentGood,
-                    currentCartGood.getCount() - count));
+            currentCart.removeBook(currentCartBook);
+            currentCart.addBook(new CartBook(currentCart, currentBook,
+                    currentCartBook.getCount() - count, currentCartBook.getTimestamp()));
         }
         return cartRepository.save(currentCart);
     }

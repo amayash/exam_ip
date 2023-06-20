@@ -1,9 +1,9 @@
 package com.example.exam.folder.model;
 
-public class GoodExtension extends Good {
+public class BookExtension extends Book {
     private Long capacity;
-    public GoodExtension(Good good, Long capacity) {
-        super(good);
+    public BookExtension(Book book, Long capacity) {
+        super(book);
         this.capacity = capacity;
     }
 

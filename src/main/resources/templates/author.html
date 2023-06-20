@@ -6,11 +6,11 @@
 <head>
 </head>
 <body>
-<div layout:fragment="content_header">Категории</div>
+<div layout:fragment="content_header">Авторы</div>
 <div layout:fragment="content">
     <div class="d-flex justify-content-end" sec:authorize="hasRole('ROLE_ADMIN')">
         <a class="btn btn-success button-fixed"
-           th:href="@{/category/edit}">
+           th:href="@{/author/edit}">
             <i class="fa-solid fa-plus"></i>
         </a>
     </div>
@@ -23,13 +23,13 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="item, iterator: ${categories}">
+        <tr th:each="item, iterator: ${authors}">
             <td th:text="${item.id}"/>
-            <td><a th:text="${item.name}" th:href="@{/book/search/category?request={id}(id=${item.id})}"/></td>
+            <td><a th:text="${item.name}" th:href="@{/author/{id}(id=${item.id})}"/></td>
             <td>
                 <div>
                     <a type="button" class="m-1 btn btn-primary"
-                       th:href="@{/category/edit/{id}(id=${item.id})}"
+                       th:href="@{/author/edit/{id}(id=${item.id})}"
                        sec:authorize="hasRole('ROLE_ADMIN')">
                         <i class="fa fa-pencil"></i>
                     </a>
@@ -39,7 +39,7 @@
                         <i class="fa fa-trash"></i>
                     </a>
                 </div>
-                <form th:action="@{/category/delete/{id}(id=${item.id})}" method="post"
+                <form th:action="@{/author/delete/{id}(id=${item.id})}" method="post"
                       sec:authorize="hasRole('ROLE_ADMIN')">
                     <button th:id="'remove-' + ${item.id}" type="submit" style="display: none">
                         Удалить

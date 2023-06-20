@@ -5,13 +5,13 @@
 <head>
 </head>
 <body>
-<div layout:fragment="content_header" th:text="'Товары корзины'"></div>
+<div layout:fragment="content_header" th:text="'Выданные книги'"></div>
 <div layout:fragment="content">
-    <form action="#" th:action="@{/cart/}" method="post">
+    <form action="#" th:action="@{/cart/{id}(id=${id})}" method="post" th:if="${id != null}">
         <div class="mb-3">
-            <label for="good" class="form-label">Товар</label>
-            <select id="good" class="form-select" th:name="good" required="true">
-                <option th:each="value: ${goods}"
+            <label for="book" class="form-label">Книга</label>
+            <select id="book" class="form-select" th:name="book" required="true">
+                <option th:each="value: ${books}"
                         th:value="${value.id}"
                         th:text="${value.name}">
                 </option>
@@ -20,42 +20,41 @@
         <div class="mb-3">
             <label for="count" class="form-label">Количество</label>
             <input type="number" class="form-control" min="1" id="count" th:name="count"
-                   th:field="${cartGoodDto.count}" required="true">
+                   th:field="${cartBookDto.count}" required="true">
         </div>
         <div class="mb-3">
             <button type="submit" class="btn btn-primary button-fixed">
                 <span>Добавить</span>
             </button>
-            <a class="btn btn-secondary button-fixed" th:href="@{/cart}">
-                Назад
-            </a>
         </div>
     </form>
     <table class="table text-white" id="tbl-items">
         <thead>
         <tr>
             <th scope="col">ID</th>
-            <th scope="col">Price</th>
+            <th scope="col">Name</th>
             <th scope="col">Category</th>
             <th scope="col">Count</th>
+            <th scope="col">Timestamp</th>
             <th scope="col"></th>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="item, iterator: ${cartGoods}">
-            <td th:text="${item.key.id}"/>
-            <td th:text="${item.key.price}"/>
-            <td th:text="${item.key.category.name}"/>
-            <td th:text="${item.value}"/>
+        <tr th:each="item, iterator: ${cartBooks}">
+            <td th:text="${item.cartId}"/>
+            <td th:text="${item.book.name}"/>
+            <td th:text="${item.book.category.name}"/>
+            <td th:text="${item.count}"/>
+            <td th:text="${item.timestamp}"/>
             <td>
-                <div>
+                <div th:if="${id != null}">
                     <a type="button" class="m-1 btn btn-danger"
-                       th:attr="onclick=|confirm('Удалить запись?') && document.getElementById('remove-${item.key.id}').click()|">
+                       th:attr="onclick=|confirm('Удалить запись?') && document.getElementById('remove-${item.book.id}').click()|">
                         <i class="fa fa-trash"></i>
                     </a>
                 </div>
-                <form th:action="@{'/cart?good=' + ${item.key.id}}" method="post">
-                    <button th:id="'remove-' + ${item.key.id}" type="submit" style="display: none">
+                <form th:action="'/cart/'+${id}+'?book='+${item.book.id}" method="post" th:if="${id != null}">
+                    <button th:id="'remove-' + ${item.book.id}" type="submit" style="display: none">
                         Удалить
                     </button>
                 </form>
